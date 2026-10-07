@@ -1,8 +1,8 @@
 
-Guia_Lab_W02.md
+Guia_Lab_W03.md
 100 %
-# Guía de Laboratorio — W02
-## ERP Django · Espiral 1 · Semana 2 de 24
+# Guía de Laboratorio — W03
+## ERP Django · Espiral 1 · Semana 3 de 24
 ### Técnico en Programación (SEP 3061300006-23) · UTEC Celaya
 ### Asesor: MC. Román Fernando López González
 
@@ -10,53 +10,52 @@ Guia_Lab_W02.md
 
 | Campo | Detalle |
 |---|---|
-| **Semana** | W02 de 24 |
+| **Semana** | W03 de 24 |
 | **Espiral** | E1 — Infraestructura y Configuración Base |
-| **Sprint Scrum** | Sprint 0 — Desarrollo (día 2) |
-| **Hito** | Sin hito propio · Avance hacia M1 (W03) |
+| **Sprint Scrum** | Sprint 0 — Review + Retrospectiva |
+| **Hito** | **★ M1: URL pública en Render.com + repositorio Git estable** |
 | **Horario** | 16:45 – 19:45 (180 min) |
 | **Nivel Schmelkes** | 1 — Fundamentos |
-| **Hilo conductor** | "W01 puso el motor. W02 pone la carrocería: templates, estáticos y estructura MVT real." |
+| **Hilo conductor** | "W01 arrancó el motor. W02 puso la carrocería. W03 saca el auto a la calle." |
 
 ---
 
-## Conexión con W01
+## Conexión con la Espiral 1
 
-| W01 entregó | W02 construye sobre eso |
-|---|---|
-| Proyecto Django `core` con 5 apps | Agrega templates HTML reales a cada app |
-| Vistas inline con `HttpResponse` en `urls.py` | Las migra a `views.py` usando `render()` |
-| `settings.py` base con `django-environ` | Agrega `STATIC_ROOT`, WhiteNoise y crea `settings_prod.py` |
-| `requirements.txt` básico | Lo actualiza con `gunicorn` y `psycopg2-binary` |
-| `.gitignore` y primer commit | Genera 2 commits nuevos con progreso documentado |
+| Semana | Entregó | W03 lo usa para |
+|---|---|---|
+| W01 | Proyecto Django en GitHub, 23 tests OK | Render lee el repo directamente desde GitHub |
+| W02 | `settings_prod.py` skeleton, `gunicorn` en requirements | Completar config prod y crear `Procfile` |
+| W02 | WhiteNoise + `collectstatic` configurado | El build de Render ejecuta `collectstatic` automáticamente |
+| W02 | `.env.example` en el repo | Referencia para configurar variables en Render Dashboard |
 
 ---
 
 ## Objetivos de la sesión
 
-Al terminar W02, el estudiante será capaz de:
+Al terminar W03, el estudiante será capaz de:
 
-1. Explicar el patrón MVT: **Modelo** (sin datos aún) · **Vista** `render()` · **Template** HTML con DTL
-2. Crear un sistema de diseño en `templates/base.html` con Fable 5 AzulERP (modo claro/oscuro)
-3. Construir plantillas por app que extiendan `base.html` con `{% extends %}`
-4. Migrar vistas de `urls.py` a `views.py` separando responsabilidades
-5. Configurar archivos estáticos con WhiteNoise para producción
-6. Crear la configuración de producción `settings_prod.py`
+1. Completar `settings_prod.py` con conexión a PostgreSQL via `dj-database-url`
+2. Crear `Procfile`, `Dockerfile` y `docker-compose.yml` para entornos locales y PaaS
+3. Crear `render.yaml` con configuración declarativa de despliegue
+4. Desplegar el ERP en Render.com y obtener una URL pública funcional
+5. Crear el superusuario en producción desde la consola de Render
+6. Ejecutar el Sprint 0 Review ante el asesor con demo en vivo
+7. Completar la ficha Schmelkes E1 (cierre de la Espiral 1)
 
 ---
 
-## Stack tecnológico de W02
+## Stack tecnológico de W03
 
-| Herramienta / Concepto | Novedad en W02 | Descripción |
+| Herramienta | Novedad en W03 | Descripción |
 |---|---|---|
-| Django Template Language (DTL) | ✅ Nuevo | Motor de plantillas: `{% %}`, `{{ }}`, `{% block %}`, `{% extends %}` |
-| `render()` de `django.shortcuts` | ✅ Nuevo | Reemplaza a `HttpResponse`; recibe request + template + contexto |
-| WhiteNoise 6.x | ✅ Nuevo | Middleware que sirve estáticos sin Nginx en producción |
-| Bootstrap 5.3 CDN | ✅ Nuevo | Framework CSS via CDN (sin archivos locales en W02) |
-| Google Fonts CDN | ✅ Nuevo | Playfair Display + Inter (tipografía Fable 5 AzulERP) |
-| `collectstatic` | ✅ Nuevo | Comando Django para recolectar estáticos antes del deploy |
-| `core/settings_prod.py` | ✅ Nuevo | Configuración separada con `DEBUG=False` para Render.com |
-| `gunicorn` 21.x | ✅ Nuevo | Servidor WSGI de producción (usado en W03 con Docker/Render) |
+| `dj-database-url` | ✅ Activo (instalado W02) | Lee `DATABASE_URL` del entorno y configura `DATABASES` |
+| `gunicorn` | ✅ Activo (instalado W02) | Servidor WSGI de producción; reemplaza `runserver` |
+| Docker Desktop | ✅ Nuevo (opcional) | Contenedores para simular producción en local |
+| `docker-compose` | ✅ Nuevo (opcional) | Orquesta Django + PostgreSQL + Redis en local |
+| Render.com | ✅ Nuevo | PaaS para despliegue gratuito; lee desde GitHub |
+| PostgreSQL 15 | ✅ Nuevo (producción) | BD en Render; SQLite solo en desarrollo |
+| `python-dotenv` | ya incluido vía `django-environ` | Lee `.env` localmente |
 
 ---
 
@@ -64,413 +63,161 @@ Al terminar W02, el estudiante será capaz de:
 
 | Parte | Actividad | Tiempo |
 |---|---|---|
-| Arranque | Daily Scrum + revisión M0 + `iniciar_sesion.bat` | 15 min |
-| Parte 1 | `templates/base.html` — Fable 5 AzulERP completo | 40 min |
-| Parte 2 | 5 plantillas `index.html` por app | 20 min |
-| Parte 3 | Refactorizar vistas: `urls.py` → `views.py` con `render()` | 30 min |
-| Parte 4 | Archivos estáticos y WhiteNoise | 15 min |
-| Parte 5 | `settings_prod.py` + `requirements.txt` actualizado | 15 min |
-| Parte 6 | Tests W02 (12 pruebas ejecutables) | 20 min |
-| Cierre | Commit · `finalizar_sesion.bat` · checklist · hilo → W03 | 15 min |
-| **Total** | | **180 min** |
+| Arranque | Daily Scrum + revisión W02 + `iniciar_sesion.bat` | 10 min |
+| Parte 1 | Completar `settings_prod.py` con PostgreSQL | 20 min |
+| Parte 2 | `Procfile` + `Dockerfile` + `docker-compose.yml` | 25 min |
+| Parte 3 | `render.yaml` + `fichas/` (estructura Schmelkes) | 15 min |
+| Parte 4 | Despliegue en Render.com paso a paso | 40 min |
+| Parte 5 | Tests W03 (10 pruebas) | 15 min |
+| Parte 6 | Sprint 0 Review + Retrospectiva + Ficha Schmelkes E1 | 30 min |
+| Cierre | Commit final · `finalizar_sesion.bat` · hilo → W04 | 15 min |
+| **Total** | | **170 min** |
 
 ---
 
-## ARRANQUE — Daily Scrum (15 min)
-
-### Ejecutar la sesión
+## ARRANQUE — Daily Scrum (10 min)
 
 ```cmd
 E:\iniciar_sesion.bat
 ```
 
-La terminal se abre en `C:\Temp_Workspace_ERP` con `env_erp` activo.
-
-### Daily Scrum (≤ 15 min · 3 preguntas)
+### Daily Scrum
 
 ```
-1. ¿Qué hice en W01?
-   → Configuré el entorno portable USB, creé el proyecto Django
-     con 5 apps y realicé el primer commit en GitHub.
+1. ¿Qué hice en W02?
+   → Creé templates/base.html con Fable 5 AzulERP, migré
+     las vistas a views.py con render() y configuré WhiteNoise.
 
-2. ¿Qué haré en W02?
-   → Crearé el sistema de templates Fable 5 AzulERP, migraré
-     las vistas a views.py y configuraré los archivos estáticos.
+2. ¿Qué haré en W03?
+   → Completaré settings_prod.py, crearé Procfile y Dockerfile,
+     desplegaré en Render.com y cerraré el Sprint 0.
 
 3. ¿Tengo algún impedimento?
-   → (registrar aquí cualquier problema técnico pendiente de W01)
+   → (registrar aquí cualquier problema pendiente)
 ```
 
-### Verificar estado de W01 antes de continuar
+### Verificar estado de W02
 
 ```cmd
 python manage.py check
+python manage.py test tests --verbosity=0
 git log --oneline
 ```
 
 **Resultado esperado:**
 ```
 System check identified no issues (0 silenced).
-abc1234 Sprint 0 W01: suite de tests de entorno (11 tests OK)
-def5678 Sprint 0 W01: entorno portable + proyecto Django base + 5 apps
+......... (23 puntos = 23 tests OK)
+abc1234 Sprint 0 W02 CIERRE: MVT completo + Fable5 + WhiteNoise + 23 tests OK
 ```
 
-> Si `manage.py check` muestra errores, resolverlos antes de avanzar.
+> Si la suite muestra FAIL, resolver antes de continuar. W03 no puede
+> desplegarse sobre una base rota.
 
 ---
 
-## PARTE 1 — Sistema de Templates Fable 5 AzulERP (40 min)
+## PARTE 1 — Completar `core/settings_prod.py` (20 min)
 
-### 1.1 Verificar estructura de carpetas
+### 1.1 ¿Qué faltó en el skeleton de W02?
 
-```cmd
-dir templates\
-```
+El `settings_prod.py` de W02 tenía `DEBUG=False` y los headers HTTPS,
+pero faltaba:
 
-Si `templates\` no existe (debería existir de W01):
-```cmd
-mkdir templates
-mkdir templates\registration
-```
+- Conexión a PostgreSQL via `DATABASE_URL`
+- Manejo del hostname de Render en `ALLOWED_HOSTS`
+- `CSRF_TRUSTED_ORIGINS` para el dominio de Render
 
----
+### 1.2 Reemplazar `core/settings_prod.py`
 
-### 1.2 Crear `templates/base.html`
+```python
+# core/settings_prod.py
+"""Configuración de producción — Render.com (versión final W03).
 
-Abrir VS Code → nuevo archivo → guardar como `templates\base.html`.
-Este archivo es la plantilla madre de todo el ERP:
+Hereda settings.py y sobreescribe todo lo necesario para producción.
 
-```html
-<!DOCTYPE html>
-<html lang="es" data-theme="light">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="theme-color" content="#0A2342">
-    <title>{% block title %}ERP Django{% endblock %} · UTEC Celaya</title>
+Variables de entorno requeridas en Render Dashboard:
+    SECRET_KEY              → clave aleatoria de ≥ 50 caracteres
+    DATABASE_URL            → proporcionada automáticamente por Render PostgreSQL
+    DJANGO_SETTINGS_MODULE  → core.settings_prod
+    ALLOWED_HOSTS           → tu-app.onrender.com (o dejar vacío para auto)
 
-    <!-- Google Fonts: Playfair Display + Inter + JetBrains Mono -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
-          rel="stylesheet">
+Uso local con Docker:
+    export DJANGO_SETTINGS_MODULE=core.settings_prod
+    export SECRET_KEY=dev-clave-temporal
+    export DATABASE_URL=postgres://erp_user:erp_pass@db:5432/erp_db
+    gunicorn core.wsgi --bind 0.0.0.0:8000
+"""
+from .settings import *   # hereda toda la configuración base
+import os
+import dj_database_url
 
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+# ── SEGURIDAD BÁSICA ───────────────────────────────────────────────────────
+DEBUG      = False
+SECRET_KEY = os.environ['SECRET_KEY']   # falla intencionalmente si no existe
 
-    <!-- Fable 5 AzulERP — Design System -->
-    <style>
-        /* TOKENS MODO DÍA */
-        :root, [data-theme="light"] {
-            --clr-navy   : #0A2342;
-            --clr-royal  : #1B4F8A;
-            --clr-sky    : #4A90D9;
-            --clr-ice    : #E8F0FB;
-            --clr-gold   : #B8860B;
-            --clr-amber  : #D4A017;
-            --clr-cream  : #FDF8E8;
-            --clr-bg     : #F5F7FA;
-            --clr-surface: #FFFFFF;
-            --clr-text   : #1A1A2E;
-            --clr-muted  : #5A6A7E;
-            --clr-border : #C8D8EC;
-            --clr-danger : #C0392B;
-            --clr-ok     : #1A7A4A;
-            --shadow-sm  : 0 1px 4px rgba(10,35,66,.08);
-            --shadow-md  : 0 4px 16px rgba(10,35,66,.12);
-        }
-        /* TOKENS MODO NOCHE */
-        [data-theme="dark"] {
-            --clr-navy   : #1E3A5F;
-            --clr-royal  : #2E5F9E;
-            --clr-sky    : #6BAEE8;
-            --clr-ice    : #1A2A3A;
-            --clr-gold   : #D4AF37;
-            --clr-amber  : #E8C547;
-            --clr-cream  : #2A2510;
-            --clr-bg     : #0D1B2A;
-            --clr-surface: #142033;
-            --clr-text   : #E2EAF4;
-            --clr-muted  : #8AA0B8;
-            --clr-border : #2A3F58;
-            --clr-danger : #E74C3C;
-            --clr-ok     : #2ECC71;
-            --shadow-sm  : 0 1px 4px rgba(0,0,0,.3);
-            --shadow-md  : 0 4px 16px rgba(0,0,0,.4);
-        }
-        /* BASE */
-        *, *::before, *::after { box-sizing: border-box; }
-        body {
-            font-family: 'Inter','Segoe UI',sans-serif;
-            font-size: 15px;
-            background: var(--clr-bg);
-            color: var(--clr-text);
-            line-height: 1.6;
-            transition: background .25s, color .25s;
-            margin: 0;
-        }
-        /* NAVBAR */
-        .erp-navbar {
-            background: var(--clr-navy);
-            border-bottom: 3px solid var(--clr-gold);
-            padding: .65rem 1.5rem;
-            display: flex; align-items: center;
-            justify-content: space-between; flex-wrap: wrap; gap: .5rem;
-            box-shadow: var(--shadow-md);
-        }
-        .erp-brand {
-            font-family: 'Playfair Display',Georgia,serif;
-            font-size: 1.3rem; font-weight: 700;
-            color: var(--clr-gold) !important;
-            text-decoration: none; letter-spacing: .04em;
-        }
-        .erp-brand span { color: rgba(255,255,255,.7); font-weight: 300; font-size: .85em; }
-        .erp-nav-links { display: flex; align-items: center; gap: .25rem; flex-wrap: wrap; }
-        .erp-nav-link {
-            color: rgba(255,255,255,.82) !important;
-            font-size: .88rem; font-weight: 500;
-            padding: .35rem .75rem; border-radius: 6px;
-            text-decoration: none;
-            transition: background .2s, color .2s;
-        }
-        .erp-nav-link:hover, .erp-nav-link.active {
-            background: var(--clr-royal); color: #FFF !important;
-        }
-        .theme-toggle {
-            background: var(--clr-gold); color: var(--clr-navy);
-            border: none; border-radius: 50%;
-            width: 32px; height: 32px; font-size: .9rem;
-            cursor: pointer; transition: transform .2s;
-        }
-        .theme-toggle:hover { transform: rotate(20deg); }
-        /* CONTENIDO */
-        .erp-main { padding: 2rem 0; min-height: calc(100vh - 110px); }
-        /* CARDS */
-        .erp-card {
-            background: var(--clr-surface);
-            border: 1px solid var(--clr-border);
-            border-radius: 12px; box-shadow: var(--shadow-sm);
-            padding: 1.5rem; margin-bottom: 1.5rem;
-            transition: box-shadow .2s;
-        }
-        .erp-card:hover { box-shadow: var(--shadow-md); }
-        .erp-card-header {
-            background: var(--clr-navy); color: #FFF;
-            border-radius: 10px 10px 0 0;
-            padding: .85rem 1.25rem;
-            border-left: 5px solid var(--clr-gold);
-            font-family: 'Playfair Display',serif;
-            font-size: 1.05rem; letter-spacing: .03em;
-            margin: -1.5rem -1.5rem 1.5rem;
-        }
-        /* TABLAS */
-        .erp-table {
-            width: 100%; border-collapse: separate; border-spacing: 0;
-            border-radius: 10px; overflow: hidden; box-shadow: var(--shadow-sm);
-        }
-        .erp-table thead th {
-            background: var(--clr-navy); color: #FFF;
-            font-weight: 600; font-size: .82rem;
-            text-transform: uppercase; letter-spacing: .06em;
-            padding: .75rem 1rem; border-bottom: 3px solid var(--clr-gold);
-        }
-        .erp-table tbody td {
-            background: var(--clr-surface); padding: .65rem 1rem;
-            border-bottom: 1px solid var(--clr-border); font-size: .9rem;
-        }
-        .erp-table tbody tr:nth-child(even) td { background: var(--clr-ice); }
-        .erp-table tbody tr:hover td { background: rgba(74,144,217,.08); }
-        .erp-table tfoot td {
-            background: var(--clr-cream); color: var(--clr-gold);
-            font-weight: 700; border-top: 2px solid var(--clr-gold);
-        }
-        /* BOTONES */
-        .btn-erp-primary {
-            background: var(--clr-navy); color: #FFF;
-            border: 2px solid var(--clr-gold); border-radius: 8px;
-            padding: .45rem 1.2rem; font-weight: 600; font-size: .88rem;
-            cursor: pointer; text-decoration: none; display: inline-block;
-            transition: background .2s, color .2s;
-        }
-        .btn-erp-primary:hover { background: var(--clr-gold); color: var(--clr-navy); }
-        .btn-erp-gold {
-            background: var(--clr-gold); color: var(--clr-navy);
-            border: 2px solid var(--clr-navy); border-radius: 8px;
-            padding: .45rem 1.2rem; font-weight: 700;
-            cursor: pointer; text-decoration: none; display: inline-block;
-            transition: background .2s;
-        }
-        .btn-erp-gold:hover { background: var(--clr-amber); }
-        .btn-erp-danger {
-            background: var(--clr-danger); color: #FFF; border: none;
-            border-radius: 8px; padding: .4rem 1rem;
-            font-weight: 600; font-size: .85rem;
-            cursor: pointer; text-decoration: none; display: inline-block;
-        }
-        .btn-erp-sm { padding: .25rem .7rem; font-size: .8rem; }
-        /* FORMULARIOS */
-        .erp-label {
-            font-size: .83rem; font-weight: 600; color: var(--clr-muted);
-            text-transform: uppercase; letter-spacing: .05em;
-            display: block; margin-bottom: .3rem;
-        }
-        .erp-input {
-            background: var(--clr-surface); border: 1.5px solid var(--clr-border);
-            border-radius: 8px; color: var(--clr-text);
-            padding: .5rem .85rem; width: 100%; font-size: .93rem;
-            transition: border-color .2s, box-shadow .2s;
-        }
-        .erp-input:focus {
-            outline: none; border-color: var(--clr-sky);
-            box-shadow: 0 0 0 3px rgba(74,144,217,.18);
-        }
-        /* BADGES */
-        .badge-erp-active {
-            background: rgba(26,122,74,.12); color: var(--clr-ok);
-            border: 1px solid currentColor;
-            font-size: .75rem; padding: .2rem .6rem;
-            border-radius: 20px; font-weight: 600;
-        }
-        .badge-erp-inactive {
-            background: rgba(192,57,43,.1); color: var(--clr-danger);
-            border: 1px solid currentColor;
-            font-size: .75rem; padding: .2rem .6rem; border-radius: 20px;
-        }
-        .badge-erp-gold {
-            background: var(--clr-cream); color: var(--clr-gold);
-            border: 1px solid var(--clr-gold);
-            font-size: .75rem; padding: .2rem .7rem;
-            border-radius: 20px; font-weight: 700;
-        }
-        /* ALERTAS */
-        .erp-alert-danger {
-            background: rgba(192,57,43,.08); border: 1px solid rgba(192,57,43,.3);
-            border-left: 5px solid var(--clr-danger); border-radius: 8px;
-            padding: 1rem 1.25rem;
-        }
-        .erp-alert-info {
-            background: var(--clr-ice); border: 1px solid var(--clr-border);
-            border-left: 5px solid var(--clr-sky); border-radius: 8px;
-            padding: 1rem 1.25rem;
-        }
-        .erp-alert-success {
-            background: rgba(26,122,74,.08); border: 1px solid rgba(26,122,74,.3);
-            border-left: 5px solid var(--clr-ok); border-radius: 8px;
-            padding: 1rem 1.25rem;
-        }
-        /* TÍTULO DE PÁGINA */
-        .erp-page-title {
-            display: flex; align-items: center; gap: 1rem;
-            margin-bottom: 1.5rem; padding-bottom: .75rem;
-            border-bottom: 2px solid var(--clr-border);
-        }
-        .erp-page-title h2 {
-            font-family: 'Playfair Display',serif;
-            font-size: 1.6rem; color: var(--clr-navy); margin: 0;
-        }
-        [data-theme="dark"] .erp-page-title h2 { color: var(--clr-sky); }
-        /* CÓDIGO */
-        code, .mono {
-            font-family: 'JetBrains Mono',Consolas,monospace;
-            font-size: .85em; color: var(--clr-royal);
-            background: var(--clr-ice); padding: .1em .4em; border-radius: 4px;
-        }
-        [data-theme="dark"] code,
-        [data-theme="dark"] .mono {
-            color: var(--clr-sky); background: rgba(74,144,217,.12);
-        }
-        /* FOOTER */
-        .erp-footer {
-            background: var(--clr-navy); color: rgba(255,255,255,.6);
-            text-align: center; font-size: .78rem;
-            padding: .75rem; border-top: 2px solid var(--clr-gold);
-        }
-    </style>
-    {% block extra_css %}{% endblock %}
-</head>
+# ── HOSTS PERMITIDOS ────────────────────────────────────────────────────────
+# Render inyecta RENDER_EXTERNAL_HOSTNAME automáticamente
+_render_host = os.environ.get('RENDER_EXTERNAL_HOSTNAME', '')
+_extra_hosts  = os.environ.get('ALLOWED_HOSTS', '').split(',')
 
-<body>
+ALLOWED_HOSTS = ['localhost', '127.0.0.1'] + (
+    [_render_host] if _render_host else []
+) + [h for h in _extra_hosts if h]
 
-<!-- NAVBAR -->
-<nav class="erp-navbar">
-    <a class="erp-brand" href="/">📦 ERP Django <span>· UTEC Celaya</span></a>
-    <div class="erp-nav-links">
-        <a href="{% url 'productos:inicio' %}"
-           class="erp-nav-link {% block nav_productos %}{% endblock %}">Productos</a>
-        <a href="{% url 'clientes:inicio' %}"
-           class="erp-nav-link {% block nav_clientes %}{% endblock %}">Clientes</a>
-        <a href="{% url 'proveedores:inicio' %}"
-           class="erp-nav-link {% block nav_proveedores %}{% endblock %}">Proveedores</a>
-        <a href="{% url 'ventas:inicio' %}"
-           class="erp-nav-link {% block nav_ventas %}{% endblock %}">Ventas</a>
-        <a href="{% url 'reportes:inicio' %}"
-           class="erp-nav-link {% block nav_reportes %}{% endblock %}">Reportes</a>
-        <a href="/admin/" class="erp-nav-link">Admin</a>
-        {% if user.is_authenticated %}
-            <a href="/accounts/logout/" class="erp-nav-link">
-                Salir ({{ user.username }})
-            </a>
-        {% else %}
-            <a href="/accounts/login/" class="erp-nav-link">Entrar</a>
-        {% endif %}
-        <button class="theme-toggle" id="themeBtn" title="Modo claro/oscuro">🌙</button>
-    </div>
-</nav>
+# ── BASE DE DATOS: PostgreSQL via DATABASE_URL ─────────────────────────────
+DATABASES = {
+    'default': dj_database_url.config(
+        conn_max_age=600,          # conexiones persistentes 10 min
+        conn_health_checks=True,   # verifica conexión antes de usarla
+        ssl_require=True,          # Render requiere SSL en PostgreSQL
+    )
+}
 
-<!-- MENSAJES FLASH -->
-{% if messages %}
-<div class="container mt-3">
-    {% for m in messages %}
-    <div class="erp-alert-{% if m.tags == 'error' %}danger{% elif m.tags == 'success' %}success{% else %}info{% endif %} d-flex justify-content-between align-items-center mb-2"
-         role="alert">
-        <span>{{ m }}</span>
-        <button onclick="this.parentElement.style.display='none'"
-                style="background:none;border:none;cursor:pointer;font-size:1.1rem;color:inherit;">×</button>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
+# ── CSRF: dominios de confianza ────────────────────────────────────────────
+CSRF_TRUSTED_ORIGINS = []
+if _render_host:
+    CSRF_TRUSTED_ORIGINS.append(f'https://{_render_host}')
 
-<!-- CONTENIDO PRINCIPAL -->
-<main class="erp-main">
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
-</main>
+# ── HEADERS HTTP SEGUROS ───────────────────────────────────────────────────
+SECURE_SSL_REDIRECT            = True
+SECURE_HSTS_SECONDS            = 31536000    # 1 año
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD            = True
+SESSION_COOKIE_SECURE          = True
+CSRF_COOKIE_SECURE             = True
+X_FRAME_OPTIONS                = 'DENY'
+SECURE_CONTENT_TYPE_NOSNIFF    = True
+SECURE_REFERRER_POLICY         = 'same-origin'
 
-<!-- FOOTER -->
-<footer class="erp-footer">
-    ERP Django · Django 4.2 LTS · Fable 5 AzulERP · UTEC Celaya · Espiral 1
-</footer>
+# ── ARCHIVOS ESTÁTICOS ─────────────────────────────────────────────────────
+# WhiteNoise ya configurado en settings.py; solo confirmar almacenamiento
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js">
-</script>
-
-<!-- Toggle modo noche -->
-<script>
-(function () {
-    var btn  = document.getElementById('themeBtn');
-    var html = document.documentElement;
-    var icons = { light: '🌙', dark: '☀️' };
-    var saved = localStorage.getItem('erpTheme') || 'light';
-    html.setAttribute('data-theme', saved);
-    if (btn) btn.textContent = icons[saved];
-    if (btn) {
-        btn.addEventListener('click', function () {
-            var current = html.getAttribute('data-theme');
-            var next    = current === 'light' ? 'dark' : 'light';
-            html.setAttribute('data-theme', next);
-            btn.textContent = icons[next];
-            localStorage.setItem('erpTheme', next);
-        });
-    }
-})();
-</script>
-{% block extra_js %}{% endblock %}
-</body>
-</html>
+# ── LOGGING: solo WARNING y superiores en producción ──────────────────────
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {'format': '[%(levelname)s] %(name)s: %(message)s'},
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+    'loggers': {
+        'django.security': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+    },
+}
 ```
 
 ### 1.3 Verificación de Parte 1
@@ -480,841 +227,820 @@ python manage.py check
 ```
 
 ```
-[ ] templates/base.html creado (verificar con: dir templates\base.html)
-[ ] Contiene los 2 bloques de tokens CSS (modo día y noche)
-[ ] Contiene {% block content %} y {% block title %}
-[ ] manage.py check → 0 issues
+[ ] core/settings_prod.py reemplazado completamente
+[ ] Contiene import dj_database_url
+[ ] Contiene CSRF_TRUSTED_ORIGINS
+[ ] manage.py check → 0 issues (con settings de desarrollo)
 ```
 
 ---
 
-## PARTE 2 — Plantillas por App (20 min)
+## PARTE 2 — Procfile, Dockerfile y docker-compose.yml (25 min)
 
-### 2.1 Crear carpetas de templates
+### 2.1 Crear `Procfile`
+
+El `Procfile` (sin extensión) le dice a Render cómo iniciar la app.
+
+```
+web: gunicorn core.wsgi --workers 2 --timeout 120 --log-file -
+```
+
+> **Reglas críticas del Procfile:**
+> - Sin extensión de archivo (no `.txt`, no `.bat`)
+> - Sin espacios al inicio ni al final de la línea
+> - Sin BOM (guardar en VS Code como UTF-8 sin BOM)
+> - `--log-file -` redirige logs a stdout (Render los captura)
+> - `--workers 2` es suficiente para el plan gratuito de Render
+
+Crear desde CMD:
+```cmd
+echo web: gunicorn core.wsgi --workers 2 --timeout 120 --log-file - > Procfile
+```
+
+Verificar en VS Code que el archivo no tiene extensión y la línea es exacta.
+
+---
+
+### 2.2 Crear `Dockerfile`
+
+```dockerfile
+# Dockerfile
+# Imagen base: Python 3.11 mínima (slim = sin paquetes innecesarios)
+FROM python:3.11-slim
+
+# Variables de entorno para Python en contenedor
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PORT=8000
+
+# Directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Instalar dependencias del sistema necesarias para psycopg2
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar e instalar dependencias Python primero (aprovecha caché de Docker)
+COPY requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Copiar el código fuente
+COPY . .
+
+# Recolectar archivos estáticos durante el build
+RUN python manage.py collectstatic --no-input \
+    --settings=core.settings \
+    || echo "collectstatic con settings base"
+
+# Exponer el puerto
+EXPOSE $PORT
+
+# Comando por defecto: iniciar Gunicorn
+CMD gunicorn core.wsgi \
+    --bind 0.0.0.0:$PORT \
+    --workers 2 \
+    --timeout 120 \
+    --log-file -
+```
+
+---
+
+### 2.3 Crear `docker-compose.yml`
+
+Permite simular el entorno de producción localmente con PostgreSQL y Redis.
+
+```yaml
+# docker-compose.yml
+# Uso: docker-compose up --build
+# Requiere Docker Desktop instalado en la PC
+
+version: '3.9'
+
+services:
+
+  # ── Base de datos PostgreSQL ────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB:       erp_db
+      POSTGRES_USER:     erp_user
+      POSTGRES_PASSWORD: erp_pass_local
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U erp_user -d erp_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── Cache Redis (preparado para Celery en W16) ─────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  # ── Aplicación Django ───────────────────────────────────────────────
+  web:
+    build: .
+    restart: unless-stopped
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py collectstatic --no-input &&
+             gunicorn core.wsgi --bind 0.0.0.0:8000 --workers 2 --log-file -"
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DJANGO_SETTINGS_MODULE: core.settings_prod
+      SECRET_KEY:             dev-clave-docker-no-usar-en-produccion
+      DEBUG:                  "False"
+      DATABASE_URL:           postgres://erp_user:erp_pass_local@db:5432/erp_db
+      REDIS_URL:              redis://redis:6379/0
+      ALLOWED_HOSTS:          localhost,127.0.0.1
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+```
+
+### 2.4 Crear `.dockerignore`
+
+```
+# .dockerignore — excluir archivos innecesarios de la imagen Docker
+env_erp/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.git/
+.gitignore
+db.sqlite3
+staticfiles/
+media/
+*.md
+.vscode/
+tests/
+```
+
+### 2.5 Prueba local con Docker (opcional — si Docker está disponible)
 
 ```cmd
-for %a in (clientes proveedores productos ventas reportes) do (
-    mkdir %a\templates\%a
-)
+:: Construir e iniciar los servicios
+docker-compose up --build
+
+:: En otra terminal: verificar que Django responde
+:: Abrir http://localhost:8000/ en el navegador
+
+:: Crear superusuario en el contenedor
+docker-compose exec web python manage.py createsuperuser
+
+:: Detener
+docker-compose down
+```
+
+### 2.6 Verificación de Parte 2
+
+```
+[ ] Procfile existe en la raíz (sin extensión, sin espacios extra)
+[ ] Procfile contiene exactamente: web: gunicorn core.wsgi --workers 2 --timeout 120 --log-file -
+[ ] Dockerfile existe en la raíz
+[ ] docker-compose.yml existe en la raíz
+[ ] .dockerignore existe en la raíz
+[ ] (Opcional) docker-compose up --build → web responde en localhost:8000
 ```
 
 ---
 
-### 2.2 Plantilla de bienvenida actualizada
+## PARTE 3 — `render.yaml` y Estructura de Fichas (15 min)
 
-Reemplazar `templates/bienvenida.html` con versión que hereda de `base.html`:
+### 3.1 Crear `render.yaml`
 
-```html
-{% extends "base.html" %}
-{% block title %}Inicio{% endblock %}
+Render.com puede usar este archivo para crear el servicio automáticamente:
 
-{% block content %}
-<div class="text-center py-4">
-    <h1 style="font-family:'Playfair Display',serif;
-               color:var(--clr-navy);font-size:2.2rem;">
-        📦 ERP Django
-    </h1>
-    <p style="color:var(--clr-muted);font-size:1.05rem;">
-        Sistema de gestión empresarial · UTEC Celaya · Espiral 1 W02
-    </p>
-    <div class="d-flex justify-content-center gap-2 mt-2 flex-wrap">
-        <span class="badge-erp-gold">Django 4.2 LTS</span>
-        <span class="badge-erp-gold">Python 3.11</span>
-        <span class="badge-erp-gold">Fable 5 AzulERP</span>
-    </div>
-</div>
+```yaml
+# render.yaml
+# Documentación: https://render.com/docs/infrastructure-as-code
 
-<div class="row g-3 mt-2">
-    {% for m in modulos %}
-    <div class="col-md-4">
-        <div class="erp-card text-center"
-             style="cursor:pointer;" onclick="window.location='{{ m.url }}'">
-            <div style="font-size:2rem;margin-bottom:.4rem;">{{ m.icono }}</div>
-            <strong style="color:var(--clr-navy);">{{ m.nombre }}</strong>
-            <p style="color:var(--clr-muted);font-size:.85rem;margin:.3rem 0 0;">
-                {{ m.descripcion }}
-            </p>
-        </div>
-    </div>
-    {% endfor %}
-</div>
-{% endblock %}
+services:
+  - type: web
+    name: erp-django-utec
+    env: python
+    plan: free                     # plan gratuito para desarrollo académico
+    region: oregon                 # us-west región gratuita de Render
+    branch: main
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --no-input
+      python manage.py migrate
+    startCommand: gunicorn core.wsgi --workers 2 --timeout 120 --log-file -
+    healthCheckPath: /
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: core.settings_prod
+      - key: SECRET_KEY
+        generateValue: true        # Render genera una clave aleatoria segura
+      - key: DATABASE_URL
+        fromDatabase:
+          name: erp-django-db
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+
+databases:
+  - name: erp-django-db
+    databaseName: erp_db
+    user: erp_user
+    plan: free                     # PostgreSQL gratuito en Render (90 días)
+    region: oregon
 ```
+
+> **Nota:** El plan PostgreSQL gratuito de Render expira a los 90 días.
+> Para proyectos en producción real, usar el plan pagado o migrar a
+> Railway / Supabase (alternativas gratuitas sin límite de tiempo).
 
 ---
 
-### 2.3 `productos/templates/productos/index.html`
-
-```html
-{% extends "base.html" %}
-{% block title %}Productos{% endblock %}
-{% block nav_productos %}active{% endblock %}
-
-{% block content %}
-<div class="erp-page-title">
-    <h2>📦 Productos</h2>
-    <span class="badge-erp-gold ms-auto">Espiral 2 · W05</span>
-</div>
-<div class="erp-card">
-    <div class="erp-card-header">Módulo de Inventario y Productos</div>
-    <p>Gestión de catálogo de productos, precios y stock disponible.</p>
-    <div class="erp-alert-info">
-        <strong>Estado W02:</strong> Módulo en construcción.
-        CRUD completo disponible en
-        <span class="badge-erp-gold">Espiral 2 · W05–W06</span>
-    </div>
-    <br>
-    <a href="/" class="btn-erp-primary">← Inicio</a>
-</div>
-{% endblock %}
-```
-
----
-
-### 2.4 `clientes/templates/clientes/index.html`
-
-```html
-{% extends "base.html" %}
-{% block title %}Clientes{% endblock %}
-{% block nav_clientes %}active{% endblock %}
-
-{% block content %}
-<div class="erp-page-title">
-    <h2>👥 Clientes</h2>
-    <span class="badge-erp-gold ms-auto">Espiral 2 · W04</span>
-</div>
-<div class="erp-card">
-    <div class="erp-card-header">Módulo de Clientes</div>
-    <p>Gestión de cartera de clientes y datos de contacto.</p>
-    <div class="erp-alert-info">
-        <strong>Estado W02:</strong> Módulo en construcción.
-        CRUD completo en <span class="badge-erp-gold">Espiral 2 · W04–W06</span>
-    </div>
-    <br>
-    <a href="/" class="btn-erp-primary">← Inicio</a>
-</div>
-{% endblock %}
-```
-
----
-
-### 2.5 `proveedores/templates/proveedores/index.html`
-
-```html
-{% extends "base.html" %}
-{% block title %}Proveedores{% endblock %}
-{% block nav_proveedores %}active{% endblock %}
-
-{% block content %}
-<div class="erp-page-title">
-    <h2>🏭 Proveedores</h2>
-    <span class="badge-erp-gold ms-auto">Espiral 2 · W04</span>
-</div>
-<div class="erp-card">
-    <div class="erp-card-header">Módulo de Proveedores</div>
-    <p>Red de proveedores y relación con productos del catálogo.</p>
-    <div class="erp-alert-info">
-        <strong>Estado W02:</strong> Módulo en construcción.
-        Implementación en <span class="badge-erp-gold">Espiral 2 · W04–W06</span>
-    </div>
-    <br>
-    <a href="/" class="btn-erp-primary">← Inicio</a>
-</div>
-{% endblock %}
-```
-
----
-
-### 2.6 `ventas/templates/ventas/index.html`
-
-```html
-{% extends "base.html" %}
-{% block title %}Ventas{% endblock %}
-{% block nav_ventas %}active{% endblock %}
-
-{% block content %}
-<div class="erp-page-title">
-    <h2>💰 Ventas</h2>
-    <span class="badge-erp-gold ms-auto">Espiral 3 · W07</span>
-</div>
-<div class="erp-card">
-    <div class="erp-card-header">Módulo de Ventas y Pedidos</div>
-    <p>Ciclo de ventas, pedidos, facturación y seguimiento.</p>
-    <div class="erp-alert-info">
-        <strong>Estado W02:</strong> Módulo en construcción.
-        CRUD + API en <span class="badge-erp-gold">Espiral 3 · W07–W09</span>
-    </div>
-    <br>
-    <a href="/" class="btn-erp-primary">← Inicio</a>
-</div>
-{% endblock %}
-```
-
----
-
-### 2.7 `reportes/templates/reportes/index.html`
-
-```html
-{% extends "base.html" %}
-{% block title %}Reportes{% endblock %}
-{% block nav_reportes %}active{% endblock %}
-
-{% block content %}
-<div class="erp-page-title">
-    <h2>📊 Reportes y Dashboard</h2>
-    <span class="badge-erp-gold ms-auto">Espiral 7 · W19</span>
-</div>
-<div class="erp-card">
-    <div class="erp-card-header">Módulo de Analítica</div>
-    <p>KPIs, gráficas de ventas y exportación de datos.</p>
-    <div class="erp-alert-info">
-        <strong>Estado W02:</strong> Módulo en construcción.
-        Dashboard en <span class="badge-erp-gold">Espiral 7 · W19–W21</span>
-    </div>
-    <br>
-    <a href="/" class="btn-erp-primary">← Inicio</a>
-</div>
-{% endblock %}
-```
-
-### 2.8 Verificación de Parte 2
+### 3.2 Crear estructura de fichas Schmelkes
 
 ```cmd
-python manage.py runserver
+mkdir fichas
 ```
 
-Abrir en el navegador y verificar cada URL:
+Crear `fichas/espiral_01_infra.md` (se completará al final de la sesión en Parte 6):
 
+```markdown
+# Ficha de Sistematización — Espiral 1
+## ERP Django · Espiral E1: Infraestructura y Configuración Base
+## UTEC Celaya · Técnico en Programación (SEP 3061300006-23)
+
+| Campo | Contenido |
+|---|---|
+| **Número de espiral** | 1 |
+| **Nombre del ciclo** | Infraestructura y Configuración Base |
+| **Semanas** | W01 – W03 |
+| **Fecha de inicio** | ___/___/_____ |
+| **Fecha de cierre** | ___/___/_____ |
+| **Responsable** | [Nombre del estudiante] |
+| **Asesor** | MC. Román Fernando López González |
+
+---
+
+## 1. Objetivo del ciclo
+
+Establecer el entorno de desarrollo portable en USB y desplegar el
+proyecto Django base en Render.com, de modo que cualquier avance
+posterior tenga una URL pública verificable desde el inicio del proyecto.
+
+---
+
+## 2. Tareas realizadas
+
+| # | Tarea | Estado | Tiempo invertido |
+|---|---|---|---|
+| 1 | Configurar Python 3.11 embeddable en USB | ✅ | h:mm |
+| 2 | Instalar pip y virtualenv | ✅ | h:mm |
+| 3 | Configurar Git Portable | ✅ | h:mm |
+| 4 | Crear scripts iniciar/finalizar sesión | ✅ | h:mm |
+| 5 | Crear proyecto Django con 5 apps | ✅ | h:mm |
+| 6 | Sistema de templates Fable 5 AzulERP | ✅ | h:mm |
+| 7 | Configurar WhiteNoise y estáticos | ✅ | h:mm |
+| 8 | Completar settings_prod.py con PostgreSQL | ✅ | h:mm |
+| 9 | Crear Procfile, Dockerfile, docker-compose.yml | ✅ | h:mm |
+| 10 | Crear render.yaml | ✅ | h:mm |
+| 11 | Desplegar en Render.com → URL pública | ✅ | h:mm |
+| 12 | Ejecutar Sprint 0 Review y Retrospectiva | ✅ | h:mm |
+
+---
+
+## 3. Evidencias generadas
+
+- [ ] Repositorio GitHub: `https://github.com/tu-usuario/erp-django-utec`
+- [ ] URL pública Render: `https://erp-django-utec.onrender.com`
+- [ ] Captura de pantalla: `evidencias/espiral_01/render_url.png`
+- [ ] Captura de pantalla: `evidencias/espiral_01/manage_check.png`
+- [ ] Resultado de tests: `Ran 33 tests in X.XXXs — OK`
+- [ ] Commit de cierre:
 ```
-[ ] http://127.0.0.1:8000/           → bienvenida.html + navbar AzulERP visible
-[ ] http://127.0.0.1:8000/productos/ → navbar, título "📦 Productos", badge dorado
-[ ] http://127.0.0.1:8000/clientes/  → enlace "Clientes" en navbar resaltado (active)
-[ ] http://127.0.0.1:8000/ventas/    → página visible sin errores
-[ ] Toggle 🌙 → fondo cambia a azul oscuro (#0D1B2A)
-[ ] Recargar en modo oscuro → mantiene el modo (localStorage)
+[pegar aquí el resultado de: git log --oneline -5]
 ```
 
 ---
 
-## PARTE 3 — Refactorizar Vistas: `urls.py` → `views.py` (30 min)
+## 4. Criterios de aceptación verificados
 
-### 3.1 Por qué separar vistas de rutas
-
-```
-ANTES (W01 — provisional):          DESPUÉS (W02 — patrón MVT correcto):
-────────────────────────────        ────────────────────────────────────
-productos/urls.py                   productos/views.py
-  def vista_temp(request):            def index(request):
-    return HttpResponse(...)              return render(request,
-                                              'productos/index.html',
-                                              context)
-                                    productos/urls.py
-                                      path('', views.index, name='inicio')
-```
-
-**Regla MVT:** `urls.py` solo declara rutas. La lógica va en `views.py`.
-
----
-
-### 3.2 Actualizar `core/views.py`
-
-```python
-# core/views.py
-"""Vistas principales del proyecto ERP — W02.
-
-Migración: HttpResponse → render() con templates y contexto.
-"""
-from django.shortcuts import render
-from django.urls import reverse
-
-
-def bienvenida(request):
-    """Página de inicio del ERP con tarjetas de módulos.
-
-    Context:
-        modulos (list): Lista de dicts con icono, nombre, url y descripcion.
-
-    Returns:
-        HttpResponse con template bienvenida.html.
-    """
-    modulos = [
-        {
-            'nombre': 'Productos',
-            'icono': '📦',
-            'url': reverse('productos:inicio'),
-            'descripcion': 'Inventario, precios y stock',
-        },
-        {
-            'nombre': 'Clientes',
-            'icono': '👥',
-            'url': reverse('clientes:inicio'),
-            'descripcion': 'Cartera y gestión de clientes',
-        },
-        {
-            'nombre': 'Proveedores',
-            'icono': '🏭',
-            'url': reverse('proveedores:inicio'),
-            'descripcion': 'Red de proveedores',
-        },
-        {
-            'nombre': 'Ventas',
-            'icono': '💰',
-            'url': reverse('ventas:inicio'),
-            'descripcion': 'Pedidos, facturas y cobros',
-        },
-        {
-            'nombre': 'Reportes',
-            'icono': '📊',
-            'url': reverse('reportes:inicio'),
-            'descripcion': 'Dashboard y analítica',
-        },
-        {
-            'nombre': 'Admin',
-            'icono': '⚙️',
-            'url': '/admin/',
-            'descripcion': 'Panel de administración Django',
-        },
-    ]
-    return render(request, 'bienvenida.html', {'modulos': modulos})
-```
-
----
-
-### 3.3 `views.py` para cada app
-
-Crear o reemplazar el contenido de `views.py` en cada app.
-El patrón es idéntico; solo cambian `titulo`, `descripcion` y `espiral`.
-
-**`productos/views.py`**
-
-```python
-# productos/views.py
-"""Vistas de la app productos — W02 (placeholder).
-
-CRUD completo se implementa en Espiral 2 (W05-W06).
-"""
-from django.shortcuts import render
-
-
-def index(request):
-    """Vista de índice de productos.
-
-    Returns:
-        HttpResponse con template productos/index.html.
-    """
-    context = {
-        'titulo': 'Productos',
-        'descripcion': 'Gestión de inventario y catálogo de productos.',
-        'espiral': 'Espiral 2 · W05',
-    }
-    return render(request, 'productos/index.html', context)
-```
-
-**`clientes/views.py`**
-
-```python
-# clientes/views.py
-"""Vistas de la app clientes — W02 (placeholder)."""
-from django.shortcuts import render
-
-
-def index(request):
-    """Vista de índice de clientes."""
-    context = {
-        'titulo': 'Clientes',
-        'descripcion': 'Gestión de cartera de clientes.',
-        'espiral': 'Espiral 2 · W04',
-    }
-    return render(request, 'clientes/index.html', context)
-```
-
-**`proveedores/views.py`**
-
-```python
-# proveedores/views.py
-"""Vistas de la app proveedores — W02 (placeholder)."""
-from django.shortcuts import render
-
-
-def index(request):
-    """Vista de índice de proveedores."""
-    context = {
-        'titulo': 'Proveedores',
-        'descripcion': 'Red de proveedores de mercancía.',
-        'espiral': 'Espiral 2 · W04',
-    }
-    return render(request, 'proveedores/index.html', context)
-```
-
-**`ventas/views.py`**
-
-```python
-# ventas/views.py
-"""Vistas de la app ventas — W02 (placeholder)."""
-from django.shortcuts import render
-
-
-def index(request):
-    """Vista de índice de ventas."""
-    context = {
-        'titulo': 'Ventas',
-        'descripcion': 'Ciclo de ventas, pedidos y facturación.',
-        'espiral': 'Espiral 3 · W07',
-    }
-    return render(request, 'ventas/index.html', context)
-```
-
-**`reportes/views.py`**
-
-```python
-# reportes/views.py
-"""Vistas de la app reportes — W02 (placeholder)."""
-from django.shortcuts import render
-
-
-def index(request):
-    """Vista de índice de reportes."""
-    context = {
-        'titulo': 'Reportes',
-        'descripcion': 'Dashboard, KPIs y exportación de datos.',
-        'espiral': 'Espiral 7 · W19',
-    }
-    return render(request, 'reportes/index.html', context)
-```
-
----
-
-### 3.4 Actualizar `urls.py` de cada app
-
-Eliminar las funciones inline de W01. Cada `urls.py` solo importa y referencia.
-
-**`productos/urls.py`**
-
-```python
-# productos/urls.py
-"""URLs de la app productos — W02."""
-from django.urls import path
-from . import views
-
-app_name = 'productos'
-
-urlpatterns = [
-    path('', views.index, name='inicio'),
-    # Espiral 2 W05:
-    # path('lista/',          views.ProductoListView.as_view(),   name='lista'),
-    # path('nuevo/',          views.ProductoCreateView.as_view(), name='crear'),
-    # path('<int:pk>/',       views.ProductoDetailView.as_view(), name='detalle'),
-    # path('<int:pk>/editar/',views.ProductoUpdateView.as_view(), name='editar'),
-]
-```
-
-Aplicar el mismo patrón a `clientes/urls.py`, `proveedores/urls.py`,
-`ventas/urls.py` y `reportes/urls.py` — solo cambia el `app_name`.
-
----
-
-### 3.5 Verificar las 6 rutas con templates
-
-```cmd
-python manage.py check
-python manage.py runserver
-```
-
-| URL | Template renderizado | Navbar activo |
+| Criterio | ¿Cumplido? | Evidencia |
 |---|---|---|
-| `/` | `bienvenida.html` → 6 tarjetas | — |
-| `/productos/` | `productos/index.html` | "Productos" resaltado |
-| `/clientes/` | `clientes/index.html` | "Clientes" resaltado |
-| `/proveedores/` | `proveedores/index.html` | "Proveedores" resaltado |
-| `/ventas/` | `ventas/index.html` | "Ventas" resaltado |
-| `/reportes/` | `reportes/index.html` | "Reportes" resaltado |
+| `manage.py check --deploy` sin warnings críticos | ✅ / ❌ | Captura de terminal |
+| URL pública `https://…onrender.com/` → HTTP 200 | ✅ / ❌ | Captura del navegador |
+| Repositorio con ≥ 6 commits en rama `main` | ✅ / ❌ | `git log --oneline` |
+| 33 tests pasando (W01 + W02 + W03) | ✅ / ❌ | Resultado pytest |
+| Ficha Schmelkes E1 completa | ✅ / ❌ | Este documento |
 
-### COMMIT PARCIAL — punto de control seguro
+---
+
+## 5. Problemas encontrados y soluciones
+
+| Problema | Causa | Solución aplicada |
+|---|---|---|
+| | | |
+| | | |
+
+---
+
+## 6. Lecciones aprendidas
+
+1.
+2.
+3.
+
+---
+
+## 7. Tiempo total invertido
+
+| Categoría | Horas |
+|---|---|
+| Diseño / planeación | |
+| Implementación | |
+| Pruebas | |
+| Despliegue | |
+| Documentación | |
+| **Total Espiral 1** | |
+
+---
+
+## 8. Conexión con el trabajo recepcional
+
+> Esta espiral aporta evidencia para el **Capítulo 4** (Desarrollo),
+> sección 4.1 "Espiral 1: Infraestructura", y para el
+> **Capítulo 3** (Metodología), subsección "Ciclos del modelo espiral".
+```
+
+### 3.3 Crear carpeta de evidencias
 
 ```cmd
+mkdir evidencias
+mkdir evidencias\espiral_01
+```
+
+---
+
+## PARTE 4 — Despliegue en Render.com paso a paso (40 min)
+
+### 4.1 Preparar el repositorio antes del deploy
+
+```cmd
+:: Commit con todos los archivos de W03
 git add .
-git commit -m "Sprint 0 W02: render() + templates Fable5 AzulERP x6 vistas"
+git status
+
+:: Verificar que NO aparecen:
+::   env_erp/    .env    staticfiles/    db.sqlite3
+::   __pycache__/
+
+git commit -m "Sprint 0 W03: settings_prod + Procfile + Dockerfile + render.yaml"
+git push origin main
 ```
 
 ---
 
-## PARTE 4 — Archivos Estáticos y WhiteNoise (15 min)
+### 4.2 Crear cuenta y conectar repositorio en Render.com
 
-### 4.1 Respuesta a la tarea de investigación de W01
-
-> **¿Qué es WhiteNoise?**
-> Middleware que permite a Django servir archivos estáticos directamente
-> desde el proceso WSGI (Gunicorn) en producción, sin necesidad de Nginx.
-> Agrega compresión gzip, headers de caché larga duración y sirve archivos
-> desde `STATIC_ROOT` de forma eficiente y segura.
+1. Ir a `https://render.com` → registrarse con la cuenta de **GitHub**
+   (permite acceso directo al repositorio)
+2. En el dashboard → **New +** → **Web Service**
+3. Seleccionar el repositorio `erp-django-utec`
+4. Render detectará el `render.yaml` automáticamente
 
 ---
 
-### 4.2 Crear `static/erp_custom.css`
+### 4.3 Configurar el Web Service (si no usa render.yaml automático)
 
-```cmd
-mkdir static
-```
-
-Crear `static/erp_custom.css`:
-
-```css
-/* static/erp_custom.css
-   Utilidades adicionales de Fable 5 AzulERP.
-   Las variables CSS principales están definidas en base.html.
-*/
-
-/* Tarjetas clicables en la bienvenida */
-.erp-module-card {
-    transition: transform .2s, box-shadow .2s;
-    cursor: pointer;
-}
-.erp-module-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
-}
-
-/* Utilidades de color */
-.text-gold   { color: var(--clr-gold)  !important; }
-.text-navy   { color: var(--clr-navy)  !important; }
-.bg-navy     { background: var(--clr-navy) !important; }
-.border-gold { border-color: var(--clr-gold) !important; }
-
-/* Código monoespaciado */
-.font-mono {
-    font-family: 'JetBrains Mono', Consolas, monospace !important;
-    font-size: .9em;
-}
-```
+| Campo | Valor |
+|---|---|
+| **Name** | `erp-django-utec` |
+| **Region** | `Oregon (US West)` |
+| **Branch** | `main` |
+| **Runtime** | `Python 3` |
+| **Build Command** | `pip install -r requirements.txt && python manage.py collectstatic --no-input && python manage.py migrate` |
+| **Start Command** | `gunicorn core.wsgi --workers 2 --timeout 120 --log-file -` |
+| **Plan** | `Free` |
 
 ---
 
-### 4.3 Verificar configuración en `settings.py`
+### 4.4 Crear la base de datos PostgreSQL en Render
 
-Confirmar que estas líneas están presentes y correctas:
+1. En el dashboard → **New +** → **PostgreSQL**
+2. Configurar:
 
-```python
-# settings.py — sección de estáticos (verificar, no duplicar)
-STATIC_URL  = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'   # destino de collectstatic
+| Campo | Valor |
+|---|---|
+| **Name** | `erp-django-db` |
+| **Database** | `erp_db` |
+| **User** | `erp_user` |
+| **Region** | `Oregon (US West)` |
+| **Plan** | `Free` |
 
-# STATICFILES_DIRS ≠ STATIC_ROOT (error frecuente)
-STATICFILES_DIRS = [BASE_DIR / 'static']  # fuentes adicionales
+3. Render muestra la **Internal Database URL** → copiar para el paso siguiente
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+---
+
+### 4.5 Configurar variables de entorno en Render
+
+En el Web Service → **Environment** → agregar:
+
+| Variable | Valor |
+|---|---|
+| `DJANGO_SETTINGS_MODULE` | `core.settings_prod` |
+| `SECRET_KEY` | (click en "Generate" — Render genera una clave segura) |
+| `DATABASE_URL` | (pegar la Internal Database URL de PostgreSQL) |
+| `PYTHON_VERSION` | `3.11.9` |
+
+> **Importante:** `DATABASE_URL` debe ser la URL **interna** (no la externa)
+> para que la conexión sea dentro de la red de Render y sin latencia.
+
+---
+
+### 4.6 Primer deploy
+
+1. Click en **Create Web Service** (o **Manual Deploy** → **Deploy latest commit**)
+2. Observar los logs de build en tiempo real:
+
 ```
-
-> **Error frecuente:** si `STATICFILES_DIRS` incluye el mismo path que
-> `STATIC_ROOT`, `collectstatic` falla con `ValueError`.
-> Son carpetas **distintas** con propósitos distintos.
-
-Verificar que WhiteNoise está en MIDDLEWARE **después** de SecurityMiddleware:
-
-```python
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',    # ← posición 0
-    'whitenoise.middleware.WhiteNoiseMiddleware',       # ← posición 1
+==> Cloning from https://github.com/tu-usuario/erp-django-utec
+==> Running build command: pip install -r requirements.txt ...
+==> Collecting django==4.2...
+==> Successfully installed Django-4.2.x ...
+==> Running: python manage.py collectstatic --no-input
+    133 static files copied to '/app/staticfiles'.
+==> Running: python manage.py migrate
+    Applying auth.0001_initial... OK
+    Applying admin.0001_initial... OK
     ...
-]
+==> Build successful
+==> Starting service: gunicorn core.wsgi --workers 2 ...
 ```
+
+3. Al terminar → aparece la URL: `https://erp-django-utec.onrender.com`
 
 ---
 
-### 4.4 Ejecutar `collectstatic`
+### 4.7 Crear superusuario en producción
 
-```cmd
-python manage.py collectstatic --no-input
-```
+Una vez el servicio está activo, desde el dashboard de Render:
 
-**Resultado esperado:**
-```
-133 static files copied to 'C:\Temp_Workspace_ERP\staticfiles'.
-```
-
-```
-[ ] staticfiles/ creada con archivos dentro
-[ ] python manage.py check → 0 issues
-[ ] staticfiles/ está en .gitignore (no se sube a GitHub)
-```
-
----
-
-## PARTE 5 — `settings_prod.py` y `requirements.txt` (15 min)
-
-### 5.1 Crear `core/settings_prod.py`
-
-```python
-# core/settings_prod.py
-"""Configuración de producción — Render.com (borrador W02).
-
-Hereda settings.py y sobreescribe valores críticos para producción.
-W03 completará: DATABASE_URL con PostgreSQL, variables de Render.
-
-Uso:
-    DJANGO_SETTINGS_MODULE=core.settings_prod gunicorn core.wsgi
-"""
-from .settings import *   # hereda toda la configuración base
-import os
-
-# Seguridad básica
-DEBUG      = False
-SECRET_KEY = os.environ['SECRET_KEY']   # obligatorio; sin default en prod
-
-ALLOWED_HOSTS = os.environ.get(
-    'ALLOWED_HOSTS', 'localhost'
-).split(',')
-
-# HTTPS y cookies seguras
-SECURE_SSL_REDIRECT            = True
-SECURE_HSTS_SECONDS            = 31536000
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-SESSION_COOKIE_SECURE          = True
-CSRF_COOKIE_SECURE             = True
-X_FRAME_OPTIONS                = 'DENY'
-SECURE_CONTENT_TYPE_NOSNIFF    = True
-
-# Logging mínimo en producción
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {'console': {'class': 'logging.StreamHandler'}},
-    'root': {'handlers': ['console'], 'level': 'WARNING'},
-}
-
-# W03 agregará:
-# import dj_database_url
-# DATABASES = {'default': dj_database_url.config(conn_max_age=600)}
-```
-
----
-
-### 5.2 Actualizar `requirements.txt`
-
-```cmd
-pip install gunicorn "psycopg2-binary==2.9.9" "dj-database-url==2.1.0"
-pip freeze > requirements.txt
-```
-
-Verificar que el archivo contiene al menos:
-
-```
-Django==4.2.x
-djangorestframework==3.14.x
-whitenoise==6.x.x
-gunicorn==21.x.x
-psycopg2-binary==2.9.9
-dj-database-url==2.1.0
-django-environ==0.11.x
-```
-
----
-
-### 5.3 Crear `.env.example`
+1. Web Service → **Shell** (pestaña en el menú superior)
+2. Ejecutar:
 
 ```bash
-# .env.example — plantilla pública sin valores reales
-# Copiar a .env y completar con datos reales (NUNCA subir .env a Git)
-SECRET_KEY=cambiar-por-clave-aleatoria-segura-min-50-chars
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-DATABASE_URL=postgres://user:password@localhost:5432/erp_db
-REDIS_URL=redis://localhost:6379/0
-SENDGRID_API_KEY=SG.xxxxxxxxxxxxxxxx
-STRIPE_SECRET_KEY=sk_test_xxxxxxxxxxxxxxxx
-STRIPE_PUBLISHABLE_KEY=pk_test_xxxxxxxxxxxxxxxx
+python manage.py createsuperuser
+# → Username: admin
+# → Email: admin@erp-utec.com
+# → Password: (elegir contraseña segura)
 ```
 
 ---
 
-## PARTE 6 — Tests W02 (20 min)
+### 4.8 Verificar el despliegue
 
-### 6.1 Crear `tests/test_w02_mvt.py`
+Abrir en el navegador:
+
+| URL | Resultado esperado |
+|---|---|
+| `https://erp-django-utec.onrender.com/` | Bienvenida ERP con tarjetas de módulos |
+| `https://erp-django-utec.onrender.com/admin/` | Panel Django Admin (login con superusuario) |
+| `https://erp-django-utec.onrender.com/productos/` | Template productos/index.html |
+
+### 4.9 Verificación de Parte 4
+
+```
+[ ] URL pública responde HTTP 200 en el navegador
+[ ] Panel /admin/ accesible con el superusuario creado
+[ ] Los 5 módulos muestran sus templates Fable 5 AzulERP
+[ ] Toggle modo noche funciona en la URL pública
+[ ] Logs de Render no muestran errores 500
+[ ] Captura de pantalla guardada en evidencias/espiral_01/render_url.png
+```
+
+---
+
+## PARTE 5 — Tests W03 (15 min)
+
+### 5.1 Crear `tests/test_w03_deploy.py`
 
 ```python
-"""Suite de pruebas W02 — Patrón MVT: templates, vistas y estáticos.
+"""Suite de pruebas W03 — Archivos de despliegue y configuración.
+
+Verifica la existencia y contenido mínimo de los artefactos
+necesarios para desplegar en Render.com.
 
 Ejecutar con:
-    python manage.py test tests.test_w02_mvt --verbosity=2
+    python manage.py test tests.test_w03_deploy --verbosity=2
 
 Resultado esperado:
-    Ran 12 tests in X.XXXs
+    Ran 10 tests in X.XXXs
     OK
 """
+import os
+from pathlib import Path
+
+from django.conf import settings
 from django.test import TestCase
-from django.urls import reverse
+
+# Ruta raíz del proyecto (donde está manage.py)
+BASE_DIR = Path(settings.BASE_DIR)
 
 
-class TemplatesRenderTest(TestCase):
-    """Verifica que las vistas usan render() y los templates correctos."""
+class ArchivosDesplieguTest(TestCase):
+    """Verifica que los archivos de despliegue existen en el repositorio."""
 
-    def test_bienvenida_usa_template_correcto(self):
-        """La vista de inicio debe renderizar bienvenida.html."""
-        response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'bienvenida.html')
+    def test_procfile_existe(self):
+        """Procfile debe existir en la raíz del proyecto."""
+        self.assertTrue(
+            (BASE_DIR / 'Procfile').exists(),
+            "Procfile no encontrado en la raíz del proyecto"
+        )
 
-    def test_bienvenida_extiende_base(self):
-        """La página de inicio debe extender base.html."""
-        response = self.client.get('/')
-        self.assertTemplateUsed(response, 'base.html')
+    def test_procfile_contiene_gunicorn(self):
+        """Procfile debe iniciar Gunicorn, no runserver."""
+        procfile = BASE_DIR / 'Procfile'
+        if procfile.exists():
+            content = procfile.read_text(encoding='utf-8')
+            self.assertIn(
+                'gunicorn', content,
+                "Procfile debe usar gunicorn, no python manage.py runserver"
+            )
 
-    def test_productos_usa_template_correcto(self):
-        """La vista de productos debe usar productos/index.html."""
-        response = self.client.get(reverse('productos:inicio'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'productos/index.html')
+    def test_dockerfile_existe(self):
+        """Dockerfile debe existir en la raíz del proyecto."""
+        self.assertTrue(
+            (BASE_DIR / 'Dockerfile').exists(),
+            "Dockerfile no encontrado"
+        )
 
-    def test_clientes_usa_template_correcto(self):
-        """La vista de clientes debe usar clientes/index.html."""
-        response = self.client.get(reverse('clientes:inicio'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'clientes/index.html')
+    def test_render_yaml_existe(self):
+        """render.yaml debe existir en la raíz del proyecto."""
+        self.assertTrue(
+            (BASE_DIR / 'render.yaml').exists(),
+            "render.yaml no encontrado"
+        )
 
-    def test_proveedores_usa_template_correcto(self):
-        """La vista de proveedores debe usar proveedores/index.html."""
-        response = self.client.get(reverse('proveedores:inicio'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'proveedores/index.html')
+    def test_docker_compose_existe(self):
+        """docker-compose.yml debe existir en la raíz."""
+        self.assertTrue(
+            (BASE_DIR / 'docker-compose.yml').exists(),
+            "docker-compose.yml no encontrado"
+        )
 
-    def test_ventas_usa_template_correcto(self):
-        """La vista de ventas debe usar ventas/index.html."""
-        response = self.client.get(reverse('ventas:inicio'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'ventas/index.html')
-
-    def test_reportes_usa_template_correcto(self):
-        """La vista de reportes debe usar reportes/index.html."""
-        response = self.client.get(reverse('reportes:inicio'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'reportes/index.html')
-
-
-class ContextoBienvenidaTest(TestCase):
-    """Verifica el contexto de la vista de bienvenida."""
-
-    def test_contexto_contiene_modulos(self):
-        """La vista de inicio debe pasar 'modulos' en el contexto."""
-        response = self.client.get('/')
-        self.assertIn('modulos', response.context,
-                      "El contexto debe incluir la lista 'modulos'")
-
-    def test_contexto_tiene_seis_modulos(self):
-        """El contexto debe contener exactamente 6 módulos."""
-        response = self.client.get('/')
-        modulos = response.context.get('modulos', [])
-        self.assertEqual(
-            len(modulos), 6,
-            f"Se esperaban 6 módulos, se encontraron {len(modulos)}"
+    def test_ficha_schmelkes_e1_existe(self):
+        """La ficha Schmelkes de la Espiral 1 debe existir."""
+        self.assertTrue(
+            (BASE_DIR / 'fichas' / 'espiral_01_infra.md').exists(),
+            "fichas/espiral_01_infra.md no encontrado"
         )
 
 
-class StaticFilesConfigTest(TestCase):
-    """Verifica la configuración de archivos estáticos y WhiteNoise."""
+class RequirementsProduccionTest(TestCase):
+    """Verifica que requirements.txt incluye dependencias de producción."""
 
-    def test_static_url_es_slash_static(self):
-        """STATIC_URL debe ser '/static/'."""
-        from django.conf import settings
-        self.assertEqual(settings.STATIC_URL, '/static/')
+    def _leer_requirements(self):
+        req_path = BASE_DIR / 'requirements.txt'
+        if not req_path.exists():
+            self.fail("requirements.txt no encontrado")
+        return req_path.read_text(encoding='utf-8').lower()
 
-    def test_static_root_configurado(self):
-        """STATIC_ROOT debe estar definido."""
-        from django.conf import settings
-        self.assertTrue(bool(settings.STATIC_ROOT),
-                        "STATIC_ROOT no está configurado")
+    def test_gunicorn_en_requirements(self):
+        """gunicorn debe estar en requirements.txt."""
+        self.assertIn('gunicorn', self._leer_requirements(),
+                      "gunicorn falta en requirements.txt")
 
-    def test_whitenoise_en_middleware(self):
-        """WhiteNoise debe estar en MIDDLEWARE."""
-        from django.conf import settings
+    def test_psycopg2_en_requirements(self):
+        """psycopg2-binary debe estar en requirements.txt."""
+        self.assertIn('psycopg2', self._leer_requirements(),
+                      "psycopg2-binary falta en requirements.txt")
+
+    def test_dj_database_url_en_requirements(self):
+        """dj-database-url debe estar en requirements.txt."""
+        self.assertIn('dj-database-url', self._leer_requirements(),
+                      "dj-database-url falta en requirements.txt")
+
+
+class SettingsProdTest(TestCase):
+    """Verifica el contenido de settings_prod.py leyendo el archivo."""
+
+    def _leer_settings_prod(self):
+        path = BASE_DIR / 'core' / 'settings_prod.py'
+        if not path.exists():
+            self.fail("core/settings_prod.py no encontrado")
+        return path.read_text(encoding='utf-8')
+
+    def test_settings_prod_tiene_debug_false(self):
+        """settings_prod.py debe tener DEBUG = False."""
+        content = self._leer_settings_prod()
         self.assertIn(
-            'whitenoise.middleware.WhiteNoiseMiddleware',
-            settings.MIDDLEWARE,
-            "WhiteNoise no está en MIDDLEWARE"
+            'DEBUG = False', content,
+            "settings_prod.py debe contener 'DEBUG = False'"
         )
 
-    def test_whitenoise_despues_de_security(self):
-        """WhiteNoise debe ir DESPUÉS de SecurityMiddleware."""
-        from django.conf import settings
-        m = settings.MIDDLEWARE
-        idx_sec  = m.index('django.middleware.security.SecurityMiddleware')
-        idx_wn   = m.index('whitenoise.middleware.WhiteNoiseMiddleware')
-        self.assertLess(idx_sec, idx_wn,
-                        "SecurityMiddleware debe ir ANTES que WhiteNoise")
+    def test_settings_prod_importa_dj_database_url(self):
+        """settings_prod.py debe importar dj_database_url."""
+        content = self._leer_settings_prod()
+        self.assertIn(
+            'dj_database_url', content,
+            "settings_prod.py debe importar dj_database_url"
+        )
 ```
 
----
-
-### 6.2 Ejecutar los tests
+### 5.2 Ejecutar los tests
 
 ```cmd
-python manage.py test tests.test_w02_mvt --verbosity=2
+python manage.py test tests.test_w03_deploy --verbosity=2
 ```
 
 **Resultado esperado:**
 ```
-test_bienvenida_extiende_base ... ok
-test_bienvenida_usa_template_correcto ... ok
-test_clientes_usa_template_correcto ... ok
-test_contexto_contiene_modulos ... ok
-test_contexto_tiene_seis_modulos ... ok
-test_productos_usa_template_correcto ... ok
-test_proveedores_usa_template_correcto ... ok
-test_reportes_usa_template_correcto ... ok
-test_static_root_configurado ... ok
-test_static_url_es_slash_static ... ok
-test_ventas_usa_template_correcto ... ok
-test_whitenoise_despues_de_security ... ok
-test_whitenoise_en_middleware ... ok
+test_dj_database_url_en_requirements ... ok
+test_docker_compose_existe ... ok
+test_dockerfile_existe ... ok
+test_ficha_schmelkes_e1_existe ... ok
+test_gunicorn_en_requirements ... ok
+test_procfile_contiene_gunicorn ... ok
+test_procfile_existe ... ok
+test_psycopg2_en_requirements ... ok
+test_render_yaml_existe ... ok
+test_settings_prod_importa_dj_database_url ... ok
+test_settings_prod_tiene_debug_false ... ok
 
-Ran 12 tests in X.XXXs
+Ran 10 tests in X.XXXs
 OK
 ```
 
-### 6.3 Suite acumulada W01 + W02
+### 5.3 Suite acumulada W01 + W02 + W03
 
 ```cmd
-python manage.py test tests --verbosity=2
+python manage.py test tests --verbosity=0
 ```
 
-**Resultado esperado:** `Ran 23 tests in X.XXXs · OK`
+**Resultado esperado:** `Ran 33 tests in X.XXXs · OK`
 
 ---
 
-## CIERRE — Commit, Respaldo y Scrum (15 min)
+## PARTE 6 — Sprint 0 Review + Retrospectiva (30 min)
+
+### 6.1 Sprint 0 Review (≤ 15 min)
+
+El **Sprint Review** es una demostración del incremento de software
+ante el Product Owner (el asesor). No es una presentación de diapositivas;
+es una **demo en vivo**.
+
+**Formato de la demo (guión de 3 minutos):**
+
+```
+1. Mostrar la URL pública en el navegador:
+   → https://erp-django-utec.onrender.com/
+
+2. Demostrar el toggle de modo noche (🌙 → ☀️).
+
+3. Navegar a /admin/ y hacer login con el superusuario.
+
+4. Mostrar el repositorio en GitHub:
+   → Número de commits, estructura de carpetas, Procfile visible.
+
+5. Ejecutar en la terminal:
+   → python manage.py test tests --verbosity=0
+   → Resultado: Ran 33 tests ... OK
+
+6. Declarar el Sprint Goal verificado:
+   "Al finalizar el Sprint 0, existe un proyecto Django 4.2
+    desplegado en Render.com con URL pública funcional y
+    repositorio en GitHub con historial de commits."
+   → Estado: ✅ COMPLETADO
+```
+
+**Tabla de verificación del Sprint Goal:**
+
+| Criterio del Sprint Goal | Estado |
+|---|---|
+| Proyecto Django 4.2 funcional | ✅ |
+| URL pública en Render.com | ✅ |
+| Repositorio GitHub con ≥ 6 commits | ✅ |
+| 33 tests pasando | ✅ |
+| `manage.py check` sin errores | ✅ |
+
+---
+
+### 6.2 Sprint 0 Retrospectiva (≤ 15 min)
+
+La **Retrospectiva** analiza el proceso, no el producto.
+Responder estas preguntas y registrar en `sprint0_retrospective.md`:
+
+```markdown
+# Sprint 0 Retrospective — ERP Django
+## Semanas W01–W03 · Espiral 1
+
+**Fecha:** ___/___/_____
+**Facilitador/Scrum Master:** [Nombre]
+
+## ¿Qué funcionó bien? (Keep)
+1.
+2.
+3.
+
+## ¿Qué mejorar? (Improve)
+1.
+2.
+
+## ¿Qué eliminar? (Drop)
+1.
+
+## Acción de mejora (Kaizen) para Sprint 1
+> Una sola acción concreta y medible:
+> "En el Sprint 1, voy a ____________ para mejorar ____________."
+
+## Velocidad del Sprint 0
+
+| HU | Planificado (pts) | Entregado (pts) |
+|---|---|---|
+| HU-E1-01 Entorno portable | 3 | |
+| HU-E1-02 Scripts sincronización | 2 | |
+| HU-E1-03 Repositorio GitHub | 2 | |
+| HU-E1-04 Despliegue Render.com | 3 | |
+| **Total** | **10** | |
+
+**Velocidad real del equipo:** ___ puntos / sprint
+```
+
+---
+
+### 6.3 Completar la Ficha Schmelkes E1
+
+Abrir `fichas/espiral_01_infra.md` y completar los campos vacíos:
+
+```
+[ ] Fechas de inicio y cierre correctas
+[ ] Tabla de tareas con estados y tiempos reales
+[ ] URL pública pegada en evidencias
+[ ] Resultado de "git log --oneline -5" pegado
+[ ] Todos los criterios de aceptación marcados
+[ ] Problemas encontrados documentados (al menos 1)
+[ ] 3 lecciones aprendidas redactadas
+[ ] Tiempo total invertido calculado
+[ ] Campo "Conexión con trabajo recepcional" completado
+```
+
+---
+
+## CIERRE — Commit Final y Respaldo (15 min)
 
 ### Actualizar `sprint0_planning.md`
 
 ```markdown
-## Sprint Backlog — W02 (actualización de estados)
+## Sprint 0 — Estado final W03
 
-| Tarea | Estado |
-|---|---|
-| Crear templates/base.html con Fable 5 AzulERP | ✅ |
-| Crear 5 plantillas index.html por app | ✅ |
-| Migrar vistas a views.py con render() | ✅ |
-| Configurar WhiteNoise y STATIC_ROOT | ✅ |
-| Crear core/settings_prod.py borrador | ✅ |
-| Actualizar requirements.txt (gunicorn, psycopg2) | ✅ |
-| Crear tests/test_w02_mvt.py — 12 tests OK | ✅ |
-| HU-E1-03 Repositorio GitHub: avance W02 commiteado | ✅ |
+| HU | Estado | Puntos entregados |
+|---|---|---|
+| HU-E1-01 Entorno portable USB | ✅ Completada | 3 |
+| HU-E1-02 Scripts sincronización | ✅ Completada | 2 |
+| HU-E1-03 Repositorio GitHub | ✅ Completada | 2 |
+| HU-E1-04 Despliegue Render.com | ✅ Completada | 3 |
+| **Total entregado** | | **10 / 10** |
+
+## Hito M1 — ALCANZADO ✅
+- URL pública: https://erp-django-utec.onrender.com
+- Tests: Ran 33 tests → OK
+- Commits: ≥ 6 en rama main
+- Fecha: ___/___/_____
 ```
 
 ---
 
-### Commit de cierre W02
+### Commit final de la Espiral 1
 
 ```cmd
 git add .
 git status
-```
 
-Verificar que **NO** aparecen en staging:
-- `env_erp/`
-- `.env`
-- `staticfiles/`
-- `db.sqlite3`
+:: Verificar que incluye:
+::   fichas/espiral_01_infra.md
+::   tests/test_w03_deploy.py
+::   Procfile  Dockerfile  docker-compose.yml  render.yaml
+::   sprint0_retrospective.md
+::   sprint0_planning.md (actualizado)
 
-```cmd
-git commit -m "Sprint 0 W02 CIERRE: MVT completo + Fable5 + WhiteNoise + 23 tests OK"
+git commit -m "Sprint 0 CIERRE [M1]: Render.com desplegado + 33 tests OK + Ficha Schmelkes E1"
 git push origin main
 ```
 
@@ -1323,132 +1049,136 @@ git push origin main
 ### Ejecutar `finalizar_sesion.bat`
 
 ```cmd
-:: 1. Detener el servidor (Ctrl+C)
-:: 2. Cerrar la terminal
-:: 3. Ejecutar el respaldo
+:: Detener cualquier servidor activo (Ctrl+C)
 E:\finalizar_sesion.bat
 ```
 
-Verificar en `E:\WorkSpace_ERP\` que existen:
+Verificar en `E:\WorkSpace_ERP\`:
 
 ```
-[ ] templates\base.html
-[ ] templates\bienvenida.html
-[ ] productos\templates\productos\index.html  (y los otros 4)
-[ ] core\settings_prod.py
-[ ] requirements.txt (actualizado con gunicorn)
-[ ] tests\test_w02_mvt.py
-[ ] .env.example
+[ ] Procfile
+[ ] Dockerfile
+[ ] docker-compose.yml
+[ ] .dockerignore
+[ ] render.yaml
+[ ] core/settings_prod.py (versión final con dj-database-url)
+[ ] fichas/espiral_01_infra.md (completa)
+[ ] sprint0_retrospective.md
+[ ] tests/test_w03_deploy.py
+[ ] evidencias/espiral_01/ (con capturas de pantalla)
 ```
 
 ---
 
-## CHECKLIST FINAL W02
+## CHECKLIST FINAL W03 — HITO M1
 
 ### Técnico
 
 ```
-TEMPLATES
-[ ] templates/base.html con tokens CSS día y noche completos
-[ ] Toggle 🌙 funciona y persiste en localStorage
-[ ] 5 plantillas app/templates/app/index.html creadas
-[ ] templates/bienvenida.html usa {% extends "base.html" %}
-[ ] Enlace activo en navbar se resalta en cada módulo
+ARCHIVOS DE DESPLIEGUE
+[ ] Procfile: "web: gunicorn core.wsgi --workers 2 --timeout 120 --log-file -"
+[ ] Dockerfile: FROM python:3.11-slim, collectstatic en build
+[ ] docker-compose.yml: servicios web + db (postgres:15) + redis
+[ ] .dockerignore: excluye env_erp/, .env, staticfiles/, db.sqlite3
+[ ] render.yaml: buildCommand con migrate incluido
 
-VISTAS
-[ ] core/views.py: bienvenida() usa render() con contexto 'modulos'
-[ ] 5 apps: views.py con función index() que usa render()
-[ ] 5 apps: urls.py sin código de vista inline (solo path())
-[ ] app_name definido en todos los urls.py
+SETTINGS DE PRODUCCIÓN
+[ ] settings_prod.py: import dj_database_url
+[ ] settings_prod.py: DATABASES = {dj_database_url.config(...)}
+[ ] settings_prod.py: CSRF_TRUSTED_ORIGINS con hostname de Render
+[ ] settings_prod.py: todos los SECURE_* activados
 
-ESTÁTICOS
-[ ] static/erp_custom.css creado
-[ ] STATICFILES_DIRS != STATIC_ROOT (carpetas distintas)
-[ ] collectstatic → sin errores
-[ ] WhiteNoise en MIDDLEWARE en posición 1 (después de Security)
-
-PRODUCCIÓN
-[ ] core/settings_prod.py con DEBUG=False y SECURE_* activados
-[ ] .env.example en el repositorio (sin valores reales)
-[ ] requirements.txt: gunicorn + psycopg2-binary + dj-database-url
+RENDER.COM
+[ ] Web Service creado y en estado "Live"
+[ ] PostgreSQL creado y conectado via DATABASE_URL
+[ ] SECRET_KEY generada por Render (no hardcodeada)
+[ ] URL pública responde HTTP 200
+[ ] /admin/ accesible con superusuario
+[ ] Los 5 módulos muestran sus templates
 
 TESTS
-[ ] test tests.test_w02_mvt → 12/12 OK
-[ ] test tests → 23/23 OK (W01 + W02 acumulados)
+[ ] test tests.test_w03_deploy → 10/10 OK
+[ ] test tests → 33/33 OK (W01 + W02 + W03 acumulados)
 
-GIT / SCRUM
-[ ] sprint0_planning.md con estados actualizados
-[ ] 2 commits en W02 con mensajes descriptivos
-[ ] git push → GitHub con ≥ 4 commits totales
+SCRUM / SCHMELKES
+[ ] sprint0_planning.md: 10/10 puntos entregados
+[ ] sprint0_retrospective.md: 3 secciones completadas + Kaizen
+[ ] fichas/espiral_01_infra.md: todos los campos completos
+[ ] URL pública en la ficha de evidencias
+[ ] Tiempo total de la Espiral 1 registrado
+
+GIT
+[ ] ≥ 6 commits en rama main con mensajes descriptivos
+[ ] Commit de cierre con mensaje "[M1]"
+[ ] git push → GitHub actualizado
 [ ] finalizar_sesion.bat → archivos en USB verificados
 ```
 
 ---
 
-## DIAGRAMA DE FLUJO — Petición GET en W02
+## DIAGRAMA: Arquitectura de despliegue al cerrar Espiral 1
 
 ```
-Navegador: GET /productos/
-      │
-      ▼
-core/urls.py
-  path('productos/', include('productos.urls', namespace='productos'))
-      │
-      ▼
-productos/urls.py
-  path('', views.index, name='inicio')
-      │
-      ▼
-productos/views.py
-  def index(request):
-      context = {'titulo': 'Productos', ...}
-      return render(request, 'productos/index.html', context)
-      │
-      ▼
-Django Template Engine
-  productos/templates/productos/index.html
-  ├── {% extends "base.html" %}
-  │       ├── tokens CSS día/noche
-  │       ├── navbar Fable 5 AzulERP
-  │       ├── messages flash
-  │       └── footer
-  └── {% block content %}
-          └── erp-page-title + erp-card + badge-erp-gold
-      │
-      ▼
-HTML final → Navegador (con modo oscuro opcional)
+USB (Caja fuerte)                    GitHub (Respaldo nube)
+┌─────────────────┐    git push      ┌──────────────────────┐
+│ WorkSpace_ERP/  │ ──────────────► │ erp-django-utec repo │
+│  .git/          │                  │  main branch         │
+│  Procfile       │                  └──────────┬───────────┘
+│  Dockerfile     │                             │ Auto-deploy
+│  render.yaml    │                             ▼
+└─────────────────┘               ┌─────────────────────────┐
+                                  │ Render.com              │
+PC taller (volátil)               │  Web Service (Gunicorn) │
+┌─────────────────┐               │  PostgreSQL 15          │
+│ C:\Temp_ERP\    │               │  Estáticos (WhiteNoise) │
+│  env_erp/       │               └─────────────────────────┘
+│  staticfiles/   │                             │
+│  db.sqlite3     │               https://erp-django-utec.onrender.com
+└─────────────────┘                             │
+       ▲                                        ▼
+       │  finalizar_sesion.bat        ┌─────────────────┐
+       └──────────────────────────────│ Navegador       │
+                                      │ (Fable 5 ERP)   │
+                                      └─────────────────┘
 ```
 
 ---
 
-## HILO CONDUCTOR → W03
+## HILO CONDUCTOR → W04
 
-**¿Qué entrega W02?**
-Sistema MVT completo con 6 vistas que usan `render()`, sistema de templates
-Fable 5 AzulERP con modo claro/oscuro persistente, WhiteNoise configurado,
-`settings_prod.py` listo como base, y `requirements.txt` con `gunicorn`.
+**¿Qué cierra W03?**
+La Espiral 1 completa: entorno portable funcional, sistema de templates,
+despliegue en producción con PostgreSQL, suite de 33 tests y
+documentación Schmelkes de la infraestructura.
 
-**¿Qué necesita W03 de W02?**
+**¿Qué abre W04?**
+Con el proyecto en producción, la siguiente pregunta es:
+*¿Qué datos va a manejar este ERP?* W04 comienza la Espiral 2 con el
+diseño del modelo Entidad-Relación (ER) antes de escribir una sola
+línea de código de modelo.
 
-| Artefacto de W02 | Uso en W03 |
+**¿Qué necesita W04 de W03?**
+
+| Artefacto de W03 | Uso en W04 |
 |---|---|
-| `settings_prod.py` | W03 agrega `DATABASE_URL`, `ALLOWED_HOSTS` de Render, `dj-database-url` |
-| `requirements.txt` con `gunicorn` | W03 lo usa en `Procfile`: `web: gunicorn core.wsgi` |
-| `collectstatic` configurado | Render ejecuta `python manage.py collectstatic` en el build |
-| Proyecto en GitHub | W03 conecta el repo directamente a Render.com |
+| URL pública de Render | Se verifica que cada nuevo modelo no rompe el deploy |
+| `fichas/espiral_01_infra.md` | Plantilla para abrir `fichas/espiral_02_modelos.md` |
+| `sprint0_retrospective.md` | El Kaizen se aplica en el Sprint 1 Planning de W04 |
+| Suite de 33 tests | W04 la amplía con tests de modelo (≥ 15 nuevos) |
+
+**Tarea de investigación para W04:**
+> ¿Qué es la Tercera Forma Normal (3FN) en diseño de bases de datos?
+> Diseña en papel un esquema ER mínimo para un ERP con las entidades:
+> Cliente, Producto, Venta y DetalleVenta. ¿Cuántas tablas necesitas?
 
 **Pregunta de reflexión:**
-> "¿Cuál es la diferencia entre `STATIC_ROOT` y `STATICFILES_DIRS`?
-> ¿Por qué no pueden apuntar a la misma carpeta?"
-
-**Tarea de investigación para W03:**
-> ¿Qué es un `Procfile` y qué diferencia hay entre
-> `gunicorn core.wsgi` y `python manage.py runserver`
-> en términos de seguridad y rendimiento en producción?
+> "¿Por qué es mejor diseñar el modelo ER en papel ANTES de crear
+> los modelos Django? ¿Qué pasaría si se modifica la relación entre
+> Venta y Producto después de tener datos reales en la BD?"
 
 ---
 
-## Referencia rápida de comandos W02
+## Referencia rápida de comandos W03
 
 ```cmd
 :: SESIÓN
@@ -1457,23 +1187,34 @@ E:\finalizar_sesion.bat
 
 :: DJANGO
 python manage.py check
+python manage.py check --deploy   (con env vars de prod configuradas)
 python manage.py collectstatic --no-input
 python manage.py runserver
 
 :: TESTS
-python manage.py test tests.test_w02_mvt --verbosity=2
-python manage.py test tests --verbosity=2
+python manage.py test tests.test_w03_deploy --verbosity=2
+python manage.py test tests --verbosity=0   (suite completa 33 tests)
 
 :: GIT
 git add .
-git commit -m "Sprint 0 W02: descripción"
+git commit -m "Sprint 0 CIERRE [M1]: mensaje descriptivo"
 git push origin main
 git log --oneline
+
+:: DOCKER (si está disponible)
+docker-compose up --build
+docker-compose exec web python manage.py createsuperuser
+docker-compose down
+
+:: RENDER (desde la Shell del dashboard)
+python manage.py createsuperuser
+python manage.py migrate
+python manage.py check --deploy
 ```
 
 ---
 
-*Guía de Laboratorio W02 · ERP Django*
-*Espiral 1 · Sprint 0 · MVT + Fable 5 AzulERP + WhiteNoise*
+*Guía de Laboratorio W03 · ERP Django*
+*Espiral 1 — Cierre · Sprint 0 Review + Retrospectiva · Hito M1*
 *SEP 3061300006-23 · UTEC Celaya · MC. Román Fernando López González*
-Mostrando Guia_Lab_W02.md.
+Mostrando Guia_Lab_W03.md.
